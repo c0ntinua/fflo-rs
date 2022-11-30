@@ -1,0 +1,49 @@
+TARGET = Some("aarch64-apple-darwin")
+OPT_LEVEL = Some("3")
+HOST = Some("aarch64-apple-darwin")
+cargo:rerun-if-env-changed=CC_aarch64-apple-darwin
+CC_aarch64-apple-darwin = None
+cargo:rerun-if-env-changed=CC_aarch64_apple_darwin
+CC_aarch64_apple_darwin = None
+cargo:rerun-if-env-changed=HOST_CC
+HOST_CC = None
+cargo:rerun-if-env-changed=CC
+CC = None
+cargo:rerun-if-env-changed=CFLAGS_aarch64-apple-darwin
+CFLAGS_aarch64-apple-darwin = None
+cargo:rerun-if-env-changed=CFLAGS_aarch64_apple_darwin
+CFLAGS_aarch64_apple_darwin = None
+cargo:rerun-if-env-changed=HOST_CFLAGS
+HOST_CFLAGS = None
+cargo:rerun-if-env-changed=CFLAGS
+CFLAGS = None
+cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+CRATE_CC_NO_DEFAULTS = None
+DEBUG = Some("false")
+CARGO_CFG_TARGET_FEATURE = Some("aes,crc,dit,dotprod,dpb,dpb2,fcma,fhm,flagm,fp16,frintts,jsconv,lor,lse,neon,paca,pacg,pan,pmuv3,ras,rcpc,rcpc2,rdm,sb,sha2,sha3,ssbs,vh")
+running: "cc" "-O3" "-ffunction-sections" "-fdata-sections" "-fPIC" "-arch" "arm64" "-Wall" "-Wextra" "-mmacosx-version-min=10.10" "-o" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/MacMiniFB.o" "-c" "src/native/macosx/MacMiniFB.m"
+cargo:warning=src/native/macosx/MacMiniFB.m:426:38: warning: unused parameter 'window' [-Wunused-parameter]
+cargo:warning=void mfb_set_cursor_visibility(void *window, bool visibility)
+cargo:warning=                                     ^
+cargo:warning=1 warning generated.
+exit status: 0
+running: "cc" "-O3" "-ffunction-sections" "-fdata-sections" "-fPIC" "-arch" "arm64" "-Wall" "-Wextra" "-mmacosx-version-min=10.10" "-o" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/OSXWindow.o" "-c" "src/native/macosx/OSXWindow.m"
+exit status: 0
+running: "cc" "-O3" "-ffunction-sections" "-fdata-sections" "-fPIC" "-arch" "arm64" "-Wall" "-Wextra" "-mmacosx-version-min=10.10" "-o" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/OSXWindowFrameView.o" "-c" "src/native/macosx/OSXWindowFrameView.m"
+exit status: 0
+cargo:rerun-if-env-changed=AR_aarch64-apple-darwin
+AR_aarch64-apple-darwin = None
+cargo:rerun-if-env-changed=AR_aarch64_apple_darwin
+AR_aarch64_apple_darwin = None
+cargo:rerun-if-env-changed=HOST_AR
+HOST_AR = None
+cargo:rerun-if-env-changed=AR
+AR = None
+running: "ar" "cq" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/libminifb_native.a" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/MacMiniFB.o" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/OSXWindow.o" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/src/native/macosx/OSXWindowFrameView.o"
+exit status: 0
+running: "ar" "s" "/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out/libminifb_native.a"
+exit status: 0
+cargo:rustc-link-lib=static=minifb_native
+cargo:rustc-link-search=native=/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/minifb-d88172e78fba27b7/out
+cargo:rustc-link-lib=framework=Metal
+cargo:rustc-link-lib=framework=MetalKit
