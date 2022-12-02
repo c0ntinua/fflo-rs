@@ -10,6 +10,7 @@ pub struct Settings {
 	pub delay : u32,
     pub filterings_between_frames : u32,
     pub max_filter_span : u32,
+    pub generalized_targets : u32,
 }
 pub fn default_settings(abstract_rows : u32, abstract_cols : u32, abstract_height : u32, abstract_width : u32) -> Settings{
     Settings { 
@@ -21,8 +22,9 @@ pub fn default_settings(abstract_rows : u32, abstract_cols : u32, abstract_heigh
 	    abstract_width,
         num_filters : 7u32,
         num_layers : 1u32,
-        delay : 1u32,
+        delay : 2u32,
         filterings_between_frames : 1u32,
-        max_filter_span : 9u32,
+        max_filter_span : 11u32,
+        generalized_targets : 4u32,
     }
 }
