@@ -1,44 +1,15 @@
-use crate::settings::*;
+
 use crate::layer::*;
+use crate::global;
 pub struct Buffer {
-    pub rows : u32,
-    pub cols : u32,
-    pub abstract_rows : u32,
-    pub abstract_cols : u32,
-    pub abstract_height : u32,
-	pub abstract_width : u32,
     pub cells : Vec<u32>,
 }
-
-pub fn new_buffer(settings : &Settings) -> Buffer {
+pub fn new_buffer() -> Buffer {
     Buffer {
-        rows : settings.pixel_rows,
-        cols : settings.pixel_cols,
-        abstract_rows : settings.abstract_rows,
-        abstract_cols : settings.abstract_cols,
-        abstract_height : settings.abstract_height,
-        abstract_width : settings.abstract_width,
-        cells : vec![0u32;(settings.pixel_rows * settings.pixel_cols) as usize],
-    }
+        cells : vec![0u32;(global::rows*global::pixel_height * global::cols*global::pixel_width) as usize],
+    }  
 }
 
-// pub fn paint_layers_on_buffer(layers : Vec<Layer>, buffer : &Buffer) {
-//     let mut grayness = 0u32;
-//     let mut index = 0u32;
-//     let sum = 0f64;
-//     let hue_u32 = 0u32;
-//     let num_layers_float = layer.len() as f64;
-//     for row in 0..buffer.rows {
-//         for col in 0..buffer.cols {
-//             index = row*buffer.abstract_cols + col;
-//             for layer in layers.iter() {
-//                 sum += layer.cells[index as usize];
-//             }
-//             grayness = f64_to_u32(sum/num_layers_float,2.0/256.0);
-//             hue_u32 = (grayness << 16) | (grayness << 8) | grayness;
-//             add_abstract_pixel(&mut buffer, row, col, hue_u32);
-//         }
-// }
 impl Buffer {
     pub fn add_abstract_pixels(&mut self, layers : &Vec<Layer>) {
         let mut grayness = 0u32;
@@ -46,26 +17,66 @@ impl Buffer {
         let mut sum = 0f64;
         let mut hue_u32 = 0u32;
         let num_layers_float = layers.len() as f64;
-        for row in 0..self.abstract_rows {
-            for col in 0..self.abstract_cols {
+        for row in 0..global::rows {
+            for col in 0..global::cols {
                 sum = 0.0;
-                index = row*self.abstract_cols + col;
+                index = row*global::cols + col;
                 for layer in layers.iter() {
                     sum += layer.cells[index as usize];
                 }
-                grayness = f64_to_u32(sum/num_layers_float,2.0/256.0);
+                grayness = f64_to_u32(sum/num_layers_float);
                 hue_u32 = (grayness << 16) | (grayness << 8) | grayness;
                 self.add_abstract_pixel(row, col, hue_u32);
             }
         }
     }
-
-    pub fn add_abstract_pixel(&mut self, abstract_row : u32, abstract_col : u32, hue_code : u32) {
-        let start_row = abstract_row*self.abstract_height;
-        let start_col = abstract_col*self.abstract_width;
-        for sub_row in 0u32..self.abstract_height {
-            for sub_col in 0u32..self.abstract_width {
-                self.cells[((start_row + sub_row)*self.cols + start_col + sub_col) as usize] = hue_code;
+    pub fn add_abstract_pixel(&mut self, row : u32, col : u32, grayness : u32) {
+        let start_row = row*global::pixel_height;
+        let start_col = col*global::pixel_width;
+        let buffer_cols = global::cols*global::pixel_width;
+        //let buffer_rows = global::rows*global::pixel_height;
+        let mut index = 0usize;
+        let rgb_code = (grayness << 16) | (grayness << 8) | grayness;
+        for sub_row in 0u32..global::pixel_height {
+            for sub_col in 0u32..global::pixel_width {
+                index = ((start_row + sub_row)*buffer_cols + start_col + sub_col) as usize;
+                self.cells[index] = rgb_code;
+            }
+        }
+    }
+    pub fn add_color_pixels(&mut self, layers : &Vec<Layer>) {
+        let mut grayness = 0u32;
+        let mut index = 0u32;
+        let mut rgb_sums = [0f64;3];
+        let mut r = 0u32;
+        let mut g = 0u32;
+        let mut b = 0u32;
+        let mut hue_u32 = 0u32;
+        let num_layers_float = layers.len() as f64;
+        for row in 0..global::rows {
+            for col in 0..global::cols {
+                rgb_sums = [0f64;3];
+                index = row*global::cols + col;
+                for (l, layer) in layers.iter().enumerate() {
+                    rgb_sums[l%3] += layer.cells[index as usize];
+                }
+                r = f64_to_u32(rgb_sums[0]/num_layers_float);
+                g = f64_to_u32(rgb_sums[1]/num_layers_float);
+                b = f64_to_u32(rgb_sums[2]/num_layers_float);
+                hue_u32 = (r << 16) | (g << 8) | b;
+                self.add_color_pixel(row, col, hue_u32);
+            }
+        }
+    }
+    pub fn add_color_pixel(&mut self, row : u32, col : u32, rgb_code : u32) {
+        let start_row = row*global::pixel_height;
+        let start_col = col*global::pixel_width;
+        let buffer_cols = global::cols*global::pixel_width;
+        let mut index = 0usize;
+        for sub_row in 0u32..global::pixel_height {
+            for sub_col in 0u32..global::pixel_width {
+                index = ((start_row + sub_row)*buffer_cols + start_col + sub_col) as usize;
+                self.cells[index] = rgb_code;
             }
         }
     }
@@ -77,7 +88,7 @@ pub fn from_u8_rgb(r: u8, g: u8, b: u8) -> u32 {
     let (r, g, b) = (r as u32, g as u32, b as u32);
     (r << 16) | (g << 8) | b
 }
-pub fn f64_to_u32(x : f64, scale : f64) -> u32 {
-    ((x+1.0)/scale).trunc() as u32
+pub fn f64_to_u32(x : f64) -> u32 {
+    ((x+1.0)/global::scale).trunc() as u32
 }
 

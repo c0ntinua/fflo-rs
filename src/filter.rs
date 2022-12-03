@@ -1,9 +1,10 @@
 use rand::random;
 use rand::Rng;
-use crate::settings::*;
 use crate::layer::*;
 use libm::{sin,cos,tanh, exp};
 use float_extras::f64::fmod;
+use crate::global;
+
 
 pub struct Filter {
 	pub mask : Vec<f64>,
@@ -20,14 +21,15 @@ impl Filter {
         layer.cells = new_cells;
     }
 
+
     pub fn of_cell(&self, layer : &Layer, row : i64, col : i64) -> f64 {
         let mut sum = 0.0f64;
         for (i, t) in self.targets.iter().enumerate() {
             sum += layer.get(row+t.0,col+t.1)*self.mask[i];
         }
         tanh(sum)
-
     }
+  
     pub fn filter_random_piece_of_layer(&self, layer : &mut Layer, num_cells : usize) {
         let mut rng = rand::thread_rng();
         let mut new_value = 0.0f64;
@@ -40,10 +42,10 @@ impl Filter {
     }
 }
 
-pub fn random_filter(settings : &Settings) -> Filter {
+pub fn random_filter() -> Filter {
     let mut rng = rand::thread_rng();
-    let row_span = rng.gen_range(0..settings.max_filter_span) as i64;
-    let col_span = rng.gen_range(0..settings.max_filter_span) as i64;
+    let row_span = rng.gen_range(0..global::max_filter_span) as i64;
+    let col_span = rng.gen_range(0..global::max_filter_span) as i64;
     let mut mask = vec![0.0;((2*row_span+1)*(2*col_span+1)) as usize];
     for x in mask.iter_mut() {
              *x = 4.0f64*(1.0 - 2.0*rand::random::<f64>());
@@ -55,16 +57,16 @@ pub fn random_filter(settings : &Settings) -> Filter {
     }
 }
 
-fn random_generalized_filter(settings : &Settings) -> Filter {
+fn random_generalized_filter() -> Filter {
     let mut rng = rand::thread_rng();
-    let mut mask = vec![0.0;settings.generalized_targets as usize];
+    let mut mask = vec![0.0;global::generalized_targets as usize];
     for x in mask.iter_mut() {
         *x = 4.0f64*(1.0 - 2.0*rand::random::<f64>());
     }
     let targets = generalized_target_set(
-        settings.generalized_targets as usize, 
-        settings.max_filter_span as i64,
-        settings.max_filter_span as i64,
+        global::generalized_targets as usize, 
+        global::max_filter_span as i64,
+        global::max_filter_span as i64,
     );
     Filter {
         mask,
@@ -72,17 +74,18 @@ fn random_generalized_filter(settings : &Settings) -> Filter {
     }
 }
     
-pub fn random_filters(settings : &Settings) -> Vec<Filter> {
+pub fn random_filters() -> Vec<Filter> {
 	let mut filters = vec![];
-    for l in 0..settings.num_layers {
-        filters.push(random_filter(settings));
+    for l in 0..global::num_filters {
+        filters.push(random_filter());
     }
     filters
 }
-pub fn random_generalized_filters(settings : &Settings) -> Vec<Filter> {
+
+pub fn random_generalized_filters() -> Vec<Filter> {
 	let mut filters = vec![];
-    for l in 0..settings.num_layers {
-        filters.push(random_generalized_filter(settings));
+    for _ in 0..global::num_layers {
+        filters.push(random_generalized_filter());
     }
     filters
 }
@@ -98,11 +101,6 @@ pub fn generalized_target_set(num_targets :  usize, row_span :  i64, col_span : 
     }
     targets
 }
-    
-    
-
-
-
 
 pub fn rectangular_target_set(row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
     let counter = 0usize;

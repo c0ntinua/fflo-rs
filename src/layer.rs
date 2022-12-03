@@ -1,4 +1,4 @@
-use crate::settings::*;
+use crate::global;
 
 pub struct Layer {
     pub rows : u32,
@@ -6,21 +6,22 @@ pub struct Layer {
     pub cells : Vec<f64>,
 }
 
-pub fn random_layer(settings : &Settings) -> Layer {
-	let mut cells = vec![0.0;(settings.abstract_rows*settings.abstract_cols) as usize];
+pub fn random_layer() -> Layer {
+	let mut cells = vec![0.0;(global::rows*global::cols) as usize];
 	for x in cells.iter_mut() {
 		*x = 1.0 - 2.0*rand::random::<f64>();
 	}
     Layer {
-        rows : settings.abstract_rows,
-        cols : settings.abstract_cols,
+        rows : global::rows,
+        cols : global::cols,
         cells,
     }
 }
-pub fn random_layers(settings : &Settings) -> Vec<Layer> {
+
+pub fn random_layers() -> Vec<Layer> {
 	let mut layers = vec![];
-    for l in 0..settings.num_layers {
-        layers.push(random_layer(settings));
+    for l in 0..global::num_layers {
+        layers.push(random_layer());
     }
     layers
 }
@@ -33,10 +34,15 @@ impl Layer {
         while row > (self.rows as i64) - 1 { row -= self.rows as i64 };
         while col < 0 { col += (self.cols as i64)};
         while col > (self.cols as i64) - 1 { col -= self.cols as i64};
-        // debug_assert!(0 <= row && row < rows);
-        // debug_assert!(0 <= col && col < self.abstract_cols);
         self.cells[((row as u32)*self.cols+(col as u32)) as usize]
     }
+}
+
+pub fn roll(x : f64) -> f64 {
+    let mut y = x;
+    while y > 1.0 {y -=1.0};
+    while y < 1.0 {y+=1.0};
+    y
 }
 
 
