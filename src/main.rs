@@ -15,7 +15,8 @@ fn main() {
     let mut window = new_window();
     let mut buffer = new_buffer();
     let mut layers = random_layers();
-    let mut filters = random_filters();
+    //let mut filters = random_filters();
+	let mut filters = random_generalized_filters();
 	let mut delay = global::delay;
 	let mut filterings = global::filterings_between_frames as usize;
     let mut paused = false;
@@ -38,8 +39,8 @@ fn main() {
                 Key::F => filters = random_filters(),
                 Key::L => layers = random_layers(),
 				Key::O => delay = 0,
-				Key::A => {if delay > 1 {delay -= 1;}},
-				Key::S => delay += 1,
+				Key::A => {if delay > 10 {delay -= 10;}},
+				Key::D => delay = global::delay,
 				Key::X => filterings += 1,
 				Key::Z => filterings = 1,
 				Key::C => color = !color,
