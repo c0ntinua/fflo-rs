@@ -28,6 +28,7 @@ impl Filter {
             sum += layer.get(row+t.0,col+t.1)*self.mask[i];
         }
         tanh(sum)
+
     }
   
     pub fn filter_random_piece_of_layer(&self, layer : &mut Layer, num_cells : usize) {

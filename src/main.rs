@@ -8,21 +8,24 @@ mod buffer; use buffer::*;
 mod window; use window::*;
 mod global;
 use std::process::exit;
-use std::thread;
+use std::time::{Duration, Instant};
+use std::{thread, time};
+
 
 
 fn main() {
-
+	let mut last_instant = Instant::now();
     let mut window = new_window();
+	let mut delay = Duration::from_millis(global::delay_ms as u64);
     let mut buffer = new_buffer();
     let mut layers = random_layers();
     //let mut filters = random_filters();
 	let mut filters = random_generalized_filters();
-	let mut delay = global::delay;
 	let mut filterings = global::filterings_between_frames as usize;
     let mut paused = false;
-    let mut delay_counter = 0;
+    let mut delay = global::delay_ms as u128;
 	let mut color = true;
+	let mut now = Instant::now();
 
 	let mut window = new_window();
 	window.set_key_repeat_delay(0.5);
@@ -40,13 +43,11 @@ fn main() {
                 Key::F => filters = random_filters(),
                 Key::L => layers = random_layers(),
 				Key::O => delay = 0,
-				Key::A => {if delay > 10 {delay -= 10;}},
-				Key::D => delay = global::delay,
+				Key::D => delay += 10,
 				Key::X => filterings += 1,
 				Key::Z => filterings = 1,
 				Key::C => color = !color,
 				Key::Key0 => {delay = 0 ; filterings = 1},
-				Key::Key1 => {delay = 10; filterings = 2},
 				Key::N => for (i, filter) in filters.iter().enumerate() {
 					filter.filter_layer_in_place(&mut layers[i%(global::num_layers as usize)]);
 				},
@@ -55,15 +56,18 @@ fn main() {
 				_ => (),
 			}
     	);
-		if !paused && delay_counter >= delay {
-			for _ in 0..filterings {
-				for (i, filter) in filters.iter().enumerate() {
-					filter.filter_layer_in_place(&mut layers[i%(global::num_layers as usize)]);
-					//filter.filter_random_piece_of_layer(&mut layers[i%(global::num_layers as usize)], 500);
+		if !paused {
+				now = Instant::now();
+				for _ in 0..filterings {
+					for (i, filter) in filters.iter().enumerate() {
+						filter.filter_layer_in_place(&mut layers[i%(global::num_layers as usize)]);
+						//filter.filter_random_piece_of_layer(&mut layers[i%(global::num_layers as usize)], 500);
+					}
 				}
-			}
-		} else {
-			delay_counter += 1;
+				if (delay  > now.elapsed().as_millis()) {
+					thread::sleep(Duration::from_millis( (delay - now.elapsed().as_millis() ) as u64));
+				}
 		}
+
 	}
 }
