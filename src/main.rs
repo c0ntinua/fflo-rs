@@ -8,6 +8,7 @@ mod buffer; use buffer::*;
 mod window; use window::*;
 mod global;
 use std::process::exit;
+use std::thread;
 
 
 fn main() {
