@@ -1,6 +1,7 @@
 
 extern crate rand;
 extern crate libm;
+mod global;
 mod fflo; use fflo::*;
 mod field; use field::*;
 mod filter; use filter::*;
@@ -11,8 +12,6 @@ use raylib::prelude::*;
 
 
 fn main() {
-	let now = Instant::now();
-	let mut flicker_counter = 0u64;
 	let mut fflo = default_fflo();
 
 	let (mut rl, thread) = raylib::init()

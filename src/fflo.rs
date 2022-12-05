@@ -16,6 +16,8 @@ pub struct Fflo {
     pub delay : u128,
     pub flickers : u64,
     pub flicker_counter : u64,
+    pub noise : bool,
+    pub noise_targets : usize,
 }
 impl Fflo {
     pub fn apply_filters(&mut self) {
@@ -68,5 +70,7 @@ pub fn default_fflo() -> Fflo {
         delay : 10000,
         flickers: 100,
         flicker_counter: 0,
+        noise : false,
+        noise_targets : 0,
     }
 }

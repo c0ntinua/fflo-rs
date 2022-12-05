@@ -17,5 +17,6 @@ pub fn handle_input(rl : &RaylibHandle, fflo : &mut Fflo) {
 	if rl.is_key_down(KEY_F) {fflo.filters = random_filters();}
 	if rl.is_key_down(KEY_G) {fflo.filters = random_generalized_filters();}
 	if rl.is_key_down(KEY_S) { fflo.field = random_field(fflo.rows, fflo.cols);}
+    if rl.is_key_down(KEY_C) { fflo.field = uniform_field(fflo.rows, fflo.cols,-1.0f64);}
 	if rl.is_key_down(KEY_A) { fflo.apply_filters();}
 }

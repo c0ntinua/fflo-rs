@@ -1,6 +1,5 @@
 use rand::random;
 use rand::Rng;
-//use crate::layer::*;
 use libm::tanh;
 use crate::global;
 use crate::field::*;
@@ -15,10 +14,9 @@ impl Filter {
         let mut cells = vec![0.0f64; field.rows*field.cols];
         for r in 0..field.rows {
             for c in 0..field.cols {
-                    cells[(r*field.cols +c) as usize] = self.of_cell(field, r as i64, c as i64);
+                cells[(r*field.cols +c) as usize] = self.of_cell(field, r as i64, c as i64);
             }
         }
-
         Field {
             rows : field.rows,
             cols : field.cols,
@@ -28,7 +26,7 @@ impl Filter {
     pub fn of_cell(&self, field : &Field, row : i64, col: i64) -> f64 {
         let mut sum = 0.0f64;
         for (i, t) in self.targets.iter().enumerate() {
-            sum += field.get(row +t.0,col  +t.1)*self.mask[i];
+            sum += field.get(row + t.0,col + t.1)*self.mask[i];
         }
         tanh(sum)
     }
@@ -57,8 +55,8 @@ pub fn random_generalized_filter() -> Filter {
     }
     let targets = generalized_target_set(
         global::generalized_targets as usize, 
-        global::max_filter_span as i64,
-        global::max_filter_span as i64,
+        global::max_filter_height as i64,
+        global::max_filter_width as i64,
     );
     Filter {
         mask,
@@ -86,10 +84,10 @@ fn generalized_target_set(num_targets :  usize, row_span :  i64, col_span : i64)
     let mut rng = rand::thread_rng();
     let mut targets = vec![];
     for i in 0..num_targets {
-        targets.push(
-            (rng.gen_range(0..row_span as usize) as i64,
-            rng.gen_range(0..col_span as usize) as i64)
-        );
+        targets.push((
+            rng.gen_range(0..row_span as usize) as i64,
+            rng.gen_range(0..col_span as usize) as i64
+        ));
     }
     targets
 }

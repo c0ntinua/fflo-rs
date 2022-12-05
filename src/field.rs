@@ -27,15 +27,18 @@ impl Field {
 
 }
 
-pub fn monochrome_canvas_from_field(field : &Field) -> Vec<Color> {
-    let mut canvas = vec![];
-    for x in field.cells.iter() { canvas.push(color_from_float(*x)); }
-    canvas
-}
-
 pub fn random_field(rows : usize, cols : usize) -> Field {
     let mut cells = vec![0.0; rows * cols];
 	for x in cells.iter_mut() { *x = random_f64();}
+    Field {
+        rows,
+        cols,
+        cells    
+    }
+}
+pub fn uniform_field(rows : usize, cols : usize, state : f64) -> Field {
+    let mut cells = vec![0.0; rows * cols];
+	for x in cells.iter_mut() { *x = state;}
     Field {
         rows,
         cols,
