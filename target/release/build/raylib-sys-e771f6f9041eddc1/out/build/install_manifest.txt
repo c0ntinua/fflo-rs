@@ -1,0 +1,9 @@
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/lib/libraylib.a
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/include/raylib.h
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/include/rlgl.h
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/include/physac.h
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/include/raymath.h
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/include/raudio.h
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/lib/pkgconfig/raylib.pc
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/lib/cmake/raylib/raylib-config-version.cmake
+/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/release/build/raylib-sys-e771f6f9041eddc1/out/lib/cmake/raylib/raylib-config.cmake

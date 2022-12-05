@@ -1,73 +1,65 @@
 
 extern crate rand;
 extern crate libm;
-extern crate minifb;use minifb::*;
+mod field; use field::*;
+mod fflo; use fflo::*;
 mod filter; use filter::*;
-mod layer; use layer::*;
-mod buffer; use buffer::*;
-mod window; use window::*;
 mod global;
 use std::process::exit;
 use std::time::{Duration, Instant};
 use std::{thread, time};
+use raylib::consts::KeyboardKey::*;
+use raylib::prelude::*;
 
 
 
 fn main() {
-	let mut last_instant = Instant::now();
-    let mut window = new_window();
-	let mut delay = Duration::from_millis(global::delay_ms as u64);
-    let mut buffer = new_buffer();
-    let mut layers = random_layers();
-    //let mut filters = random_filters();
-	let mut filters = random_generalized_filters();
-	let mut filterings = global::filterings_between_frames as usize;
-    let mut paused = false;
-    let mut delay = global::delay_ms as u128;
-	let mut color = true;
-	let mut now = Instant::now();
+	let now = Instant::now();
+	let mut flicker_counter = 0u64;
+	let mut fflo = default_fflo();
 
-	let mut window = new_window();
-	window.set_key_repeat_delay(0.5);
-	while window.is_open() && !window.is_key_down(Key::Escape) {
-		if color {
-			buffer.add_color_pixels(&layers);
+	let (mut rl, thread) = raylib::init()
+        .size(500, 500)
+        .title("ffl0-rs")
+        .build();
+	while !rl.window_should_close() {
+		if rl.is_key_down(KEY_Q) {exit(0);}
+		if rl.is_key_down(KEY_LEFT) {fflo.flickers = 0;}
+		if rl.is_key_down(KEY_RIGHT) {fflo.flickers += 1;}
+		if rl.is_key_down(KEY_P) {fflo.paused = true;}
+		if rl.is_key_down(KEY_U) {fflo.paused = false;}
+		if rl.is_key_down(KEY_COMMA) {fflo.apply_filters();}
+		if rl.is_key_down(KEY_ZERO) {fflo.flickers = 0;}
+		if rl.is_key_down(KEY_ONE) {fflo.flickers = 50;}
+		if rl.is_key_down(KEY_TWO) {fflo.flickers = 80;}
+		if rl.is_key_down(KEY_THREE) {fflo.flickers = 100;}
+		if rl.is_key_down(KEY_F) {fflo.filters = random_filters();}
+		if rl.is_key_down(KEY_G) {fflo.filters = random_generalized_filters();}
+		if rl.is_key_down(KEY_L) {
+			fflo.field = random_field(fflo.rows, fflo.cols);
+		}
+		if rl.is_key_down(KEY_A) {
+			fflo.apply_filters();
+		}
+		let mut screen = rl.begin_drawing(&thread);
+		if !fflo.paused &&  flicker_counter >= fflo.flickers {
+			fflo.apply_filters();
+			flicker_counter = 0;
+
 		} else {
-			buffer.add_abstract_pixels(&layers);
+			flicker_counter += 1;
+		}
+		fflo.plot_canvas(&mut screen);
+	
+		//if !paused {
+			// 
+			// for (i, filter) in filters.iter().enumerate() {
+			// 	filter.filter_layer_in_place(&mut layer);
+			// }
+			// 
+			// 	
+			// }
 		}
 		
-		update_window_with(&mut window, &buffer.cells);
-		window.get_keys_pressed(KeyRepeat::Yes).iter().for_each(|key|
-			match key {			
-				Key::P => paused = !paused,
-                Key::F => filters = random_filters(),
-                Key::L => layers = random_layers(),
-				Key::O => delay = 0,
-				Key::D => delay += 10,
-				Key::X => filterings += 1,
-				Key::Z => filterings = 1,
-				Key::C => color = !color,
-				Key::Key0 => {delay = 0 ; filterings = 1},
-				Key::N => for (i, filter) in filters.iter().enumerate() {
-					filter.filter_layer_in_place(&mut layers[i%(global::num_layers as usize)]);
-				},
-				Key::Q => exit(0),
-				
-				_ => (),
-			}
-    	);
-		if !paused {
-				now = Instant::now();
-				for _ in 0..filterings {
-					for (i, filter) in filters.iter().enumerate() {
-						filter.filter_layer_in_place(&mut layers[i%(global::num_layers as usize)]);
-						//filter.filter_random_piece_of_layer(&mut layers[i%(global::num_layers as usize)], 500);
-					}
-				}
-				if (delay  > now.elapsed().as_millis()) {
-					thread::sleep(Duration::from_millis( (delay - now.elapsed().as_millis() ) as u64));
-				}
-		}
 
 	}
-}
