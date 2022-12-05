@@ -11,3 +11,4 @@ pub const filterings_between_frames : u32 = 1;
 pub const max_filter_span : u32 = 17;
 pub const generalized_targets : u32 = 23;
 pub const scale : f64 = 1.0/128.0;
+pub const mask_intensity : f64 = 0.5;

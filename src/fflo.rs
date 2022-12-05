@@ -15,6 +15,7 @@ pub struct Fflo {
     pub paused : bool,
     pub delay : u128,
     pub flickers : u64,
+    pub flicker_counter : u64,
 }
 impl Fflo {
     pub fn apply_filters(&mut self) {
@@ -40,12 +41,20 @@ impl Fflo {
             }
         }
     }
+    pub fn flicker(&mut self) {
+        if !self.paused && self.flicker_counter >= self.flickers {
+            self.apply_filters();
+            self.flicker_counter = 0;
+        } else {
+            self.flicker_counter += 1;
+        }
+    }
 }
 pub fn default_fflo() -> Fflo {
     let rows = 500usize;
     let cols = 500usize;
-    let pixel_height = 1usize;
-    let pixel_width = 1usize;
+    let pixel_height = 2usize;
+    let pixel_width = 2usize;
     Fflo {
         rows,
         cols,
@@ -58,5 +67,6 @@ pub fn default_fflo() -> Fflo {
         paused : false,
         delay : 10000,
         flickers: 100,
+        flicker_counter: 0,
     }
 }

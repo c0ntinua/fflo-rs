@@ -32,29 +32,6 @@ impl Filter {
         }
         tanh(sum)
     }
-
-//     pub fn filter_layer_in_place(&self, layer : &mut Layer) {
-//         let mut new_cells = vec![0.0f64; (layer.rows*layer.cols) as usize];
-//         for r in 0..layer.rows {
-//             for c in 0..layer.cols {
-//                     new_cells[(r*layer.cols +c) as usize] = self.of_cell(layer, r as i64, c as i64);
-//             }
-//         }
-//         layer.cells = new_cells;
-//     }
-
-
-  
-//     pub fn filter_random_piece_of_layer(&self, layer : &mut Layer, num_cells : usize) {
-//         let mut rng = rand::thread_rng();
-//         let mut new_value = 0.0f64;
-//         for _ in 0..num_cells {
-//             let row = rng.gen_range(0..layer.rows) as i64;
-//             let col = rng.gen_range(0..layer.cols) as i64;
-//             new_value = self.of_cell(layer, row, col);
-//             layer.cells[((row as u32)*layer.cols+(col as u32)) as usize] = new_value;
-//         }
-//     }
 }
 
 pub fn random_filter() -> Filter {
@@ -63,7 +40,7 @@ pub fn random_filter() -> Filter {
     let col_span = rng.gen_range(0..global::max_filter_span) as i64;
     let mut mask = vec![0.0;((2*row_span+1)*(2*col_span+1)) as usize];
     for x in mask.iter_mut() {
-             *x = 4.0f64*(1.0 - 2.0*rand::random::<f64>());
+        *x = global::mask_intensity*(1.0 - 2.0*rand::random::<f64>());
     }
     let targets = rectangular_target_set(row_span, col_span);
     Filter {
@@ -76,7 +53,7 @@ pub fn random_generalized_filter() -> Filter {
     let mut rng = rand::thread_rng();
     let mut mask = vec![0.0;global::generalized_targets as usize];
     for x in mask.iter_mut() {
-        *x = 4.0f64*(1.0 - 2.0*rand::random::<f64>());
+        *x = global::mask_intensity*(1.0 - 2.0*rand::random::<f64>());
     }
     let targets = generalized_target_set(
         global::generalized_targets as usize, 
