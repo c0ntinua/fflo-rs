@@ -1,0 +1,13 @@
+prefix=/Users/scottzweydorff/Documents/GitHub/ffl0-rs/target/debug/build/raylib-sys-7f52cd39f91bc894/out
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: raylib
+Description: Simple and easy-to-use library to enjoy videogames programming
+URL: http://github.com/raysan5/raylib
+Version: 3.5.0
+Libs: -L"${libdir}" -lraylib 
+Libs.private: -lglfw  -framework Cocoa -framework IOKit -framework CoreFoundation
+Requires.private: 
+Cflags: -I"${includedir}"
