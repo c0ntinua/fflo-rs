@@ -1,5 +1,6 @@
 use raylib::core::color::Color;
 use crate::global;
+use crate::fflo::*;
 use rand::random;
 use rand::Rng;
 
@@ -25,6 +26,12 @@ impl Field {
         canvas
     }
 
+}
+
+impl Fflo {
+    pub fn randomize_field(&mut self) {
+        self.field = random_field(self.rows,self.cols);
+    }
 }
 
 pub fn random_field(rows : usize, cols : usize) -> Field {

@@ -79,6 +79,20 @@ pub fn random_generalized_filters() -> Vec<Filter> {
     }
     filters
 }
+pub fn random_gen_filters(n : usize) -> Vec<Filter> {
+	let mut filters = vec![];
+    for _ in 0..n {
+        filters.push(random_generalized_filter());
+    }
+    filters
+}
+pub fn random_rect_filters(n : usize) -> Vec<Filter> {
+	let mut filters = vec![];
+    for l in 0..n {
+        filters.push(random_filter());
+    }
+    filters
+}
 
 fn generalized_target_set(num_targets :  usize, row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
     let mut rng = rand::thread_rng();
