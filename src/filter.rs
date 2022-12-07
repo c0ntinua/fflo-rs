@@ -3,7 +3,7 @@ use rand::Rng;
 use libm::tanh;
 use crate::global;
 use crate::field::*;
-
+use crate::fflo::*;
 
 pub struct Filter {
 	pub mask : Vec<f64>,
@@ -32,69 +32,36 @@ impl Filter {
     }
 }
 
-pub fn random_filter() -> Filter {
-    let mut rng = rand::thread_rng();
-    let row_span = rng.gen_range(0..global::max_filter_span) as i64;
-    let col_span = rng.gen_range(0..global::max_filter_span) as i64;
-    let mut mask = vec![0.0;((2*row_span+1)*(2*col_span+1)) as usize];
-    for x in mask.iter_mut() {
-        *x = global::mask_intensity*(1.0 - 2.0*rand::random::<f64>());
+impl Fflo {
+    pub fn filter(&self, kind : &str) -> Filter {
+        let mut targets = vec![];
+        let mut rng = rand::thread_rng();
+        let row_span = rng.gen_range(0..self.row_span) as i64 + 1;
+        let col_span = rng.gen_range(0..self.col_span) as i64 + 1;
+        match kind {
+            "rect" => targets = rect_target_set(row_span, col_span),
+            "jagged" => targets = jagged_target_set(self.targets, row_span, col_span),
+            _ => targets = rect_target_set(row_span, col_span),
+        }
+        let mut mask = vec![0.0;targets.len()];
+        for x in mask.iter_mut() {
+            *x = self.mask_intensity*(1.0 - 2.0*rand::random::<f64>());
+        }
+        Filter {
+            mask,
+            targets,
+        }
     }
-    let targets = rectangular_target_set(row_span, col_span);
-    Filter {
-        mask,
-        targets,
+    pub fn random_filters(&self, kind : &str, num : usize) -> Vec<Filter> {
+        let mut filters = vec![];
+        for _ in 0..num {
+            filters.push(self.filter(kind));
+        }
+        filters
     }
 }
 
-pub fn random_generalized_filter() -> Filter {
-    let mut rng = rand::thread_rng();
-    let mut mask = vec![0.0;global::generalized_targets as usize];
-    for x in mask.iter_mut() {
-        *x = global::mask_intensity*(1.0 - 2.0*rand::random::<f64>());
-    }
-    let targets = generalized_target_set(
-        global::generalized_targets as usize, 
-        global::max_filter_height as i64,
-        global::max_filter_width as i64,
-    );
-    Filter {
-        mask,
-        targets,
-    }
-}
-    
-pub fn random_filters() -> Vec<Filter> {
-	let mut filters = vec![];
-    for l in 0..global::num_filters {
-        filters.push(random_filter());
-    }
-    filters
-}
-
-pub fn random_generalized_filters() -> Vec<Filter> {
-	let mut filters = vec![];
-    for _ in 0..global::num_layers {
-        filters.push(random_generalized_filter());
-    }
-    filters
-}
-pub fn random_gen_filters(n : usize) -> Vec<Filter> {
-	let mut filters = vec![];
-    for _ in 0..n {
-        filters.push(random_generalized_filter());
-    }
-    filters
-}
-pub fn random_rect_filters(n : usize) -> Vec<Filter> {
-	let mut filters = vec![];
-    for l in 0..n {
-        filters.push(random_filter());
-    }
-    filters
-}
-
-fn generalized_target_set(num_targets :  usize, row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
+fn jagged_target_set(num_targets :  usize, row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
     let mut rng = rand::thread_rng();
     let mut targets = vec![];
     for i in 0..num_targets {
@@ -106,7 +73,7 @@ fn generalized_target_set(num_targets :  usize, row_span :  i64, col_span : i64)
     targets
 }
 
-fn rectangular_target_set(row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
+fn rect_target_set(row_span :  i64, col_span : i64) -> Vec<(i64,i64)> {
     let counter = 0usize;
     let mut targets : Vec<(i64,i64)> = vec![]; 
     for row in -row_span..=row_span {

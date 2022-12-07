@@ -7,7 +7,7 @@ use fflo::*;use input::*;use init::*;use settings::*;
 fn main() {
 	let settings = fundamental_settings();
 	let (mut handle, thread, font ) = handle_thread_font(&settings);
-	let mut fflo = default_fflo(&settings,font);
+	let mut fflo = new_fflo(&settings,font);
 	while !handle.window_should_close() {
 		respond_to_input(&handle, &mut fflo);
 		fflo.flicker();
