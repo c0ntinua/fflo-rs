@@ -20,4 +20,5 @@ pub fn respond_to_input(rl : &RaylibHandle, fflo : &mut Fflo) {
 	if rl.is_key_down(KEY_SPACE) { fflo.randomize_field();}
     if rl.is_key_down(KEY_C) { fflo.field = uniform_field(fflo.rows, fflo.cols,-1.0f64);}
 	if rl.is_key_down(KEY_A) { fflo.apply_filters();}
+	if rl.is_key_down(KEY_W) { fflo.write_filters();}
 }

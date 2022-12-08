@@ -4,20 +4,13 @@ use libm::tanh;
 use crate::global;
 use crate::field::*;
 use crate::fflo::*;
+use crate::finger::*;
 
 pub struct Filter {
 	pub mask : Vec<f64>,
     pub targets : Vec<(i64,i64)>,
 }
-pub struct Finger {
-    target : (i64,i64),
-    action : f64,
-}
-impl Finger {
-    pub fn to_string(&self) -> String {
-        format!("[{:+03},{:+03},{:+020.15}]", self.target.0, self.target.1, self.action)
-    }
-}
+
 
 impl Filter {
     pub fn to_string(&self) -> String {
@@ -49,14 +42,17 @@ impl Filter {
         debug_assert!(self.mask.len() == self.targets.len());
         let mut hand = vec!();
         for i in 0..self.targets.len() {
-            hand.push(
-                Finger {
-                    target : self.targets[i],
-                    action : self.mask[i],
-                }
-            );
+            hand.push( Finger {target : self.targets[i],action : self.mask[i]});
         }
         hand
+    }
+    pub fn filter_from_string(filter_string : &str) -> Vec<Finger> {
+        let mut filter: Vec<Finger> = vec!();
+        let mut fingers_as_strings = filter_string.split("\n");
+        for finger_string in fingers_as_strings {
+            filter.push(finger_from_string(finger_string));
+        }
+        filter
     }
 }
 
