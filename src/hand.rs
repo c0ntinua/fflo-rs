@@ -1,45 +1,58 @@
 use rand::random;
 use rand::Rng;
 use libm::tanh;
-use crate::global;
-use crate::field::*;
 use crate::fflo::*;
+use crate::field::*;
 use crate::finger::*;
 
-type Hand = Vec<Finger>;
+pub type Hand = Vec<Finger>;
 
-pub fn hand_of_cell(hand : &Hand , field: &Field, target : (i64,i64) ) -> f64 {
 
+
+pub fn handled_cell(hand : &Hand , field: &Field, target : (i64,i64) ) -> f64 {
+    let mut s = 0.0f64;
+    for f in hand.iter() {
+        s += field.spin(target_sum(f.target, target))*f.action;
+    }
+    tanh(s)
 }
-pub fn of_cell(&self, field : &Field, row : i64, col: i64) -> f64 {
-    let mut sum = 0.0f64;
-    for (i, t) in self.targets.iter().enumerate() {
-        sum += field.get(row + t.0,col + t.1)*self.mask[i];
+
+pub fn handled_field(hand : &Hand, field: &Field) -> Field {
+    let mut cells = vec![0.0f64; field.rows*field.cols];
+    for r  in 0..field.rows { 
+        for c in 0..field.cols { 
+            cells[field.go(r,c)] = handled_cell(hand, field, (r as i64 , c as i64));
+        } 
     }
-    tanh(sum)
+    Field {
+        rows : field.rows,
+        cols : field.cols,
+        cells
+    }
+}
+
+
+pub fn box_hand(rows :  i64, cols : i64, pow : f64) -> Hand {
+    debug_assert!(rows % 2 == 1 && cols % 2 == 1);
+    let mut hand = vec!();
+    let (row_span, col_span) = (rows/2, cols/2);
+    for r  in -row_span..=row_span {
+        for c in -col_span..=col_span {
+            hand.push(box_finger((r,c), pow));
+        }
+    } 
+    hand
+}
+
+pub fn target_sum(x : (i64,i64), y : (i64,i64)) -> (i64,i64) {
+    (x.0+y.0,x.1+y.1)
+}
+
+pub fn hand_as_string(hand : &Hand) -> String {
+    hand.iter().map(|f : &Finger| finger_as_string(f)).collect::<Vec<String>>().join("\n")
 }
 
 
 
-    pub fn field_from_filter(&self, field : &Field) -> Field {
-        let mut cells = vec![0.0f64; field.rows*field.cols];
-        for r in 0..field.rows {
-            for c in 0..field.cols {
-                cells[(r*field.cols +c) as usize] = self.of_cell(field, r as i64, c as i64);
-            }
-        }
-        Field {
-            rows : field.rows,
-            cols : field.cols,
-            cells
-        }
-    }
-    pub fn of_cell(&self, field : &Field, row : i64, col: i64) -> f64 {
-        let mut sum = 0.0f64;
-        for (i, t) in self.targets.iter().enumerate() {
-            sum += field.get(row + t.0,col + t.1)*self.mask[i];
-        }
-        tanh(sum)
-    }
 
 

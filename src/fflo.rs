@@ -1,10 +1,13 @@
 use crate::field::*;
 use crate::filter::*;
 use crate::settings::*;
+use crate::hand::*;
+use crate::finger::*;
 use raylib::prelude::*;
 use raylib::core::color::Color;
 use raylib::core::text::Font;
 use std::fs::File;
+use rand::Rng;
 pub struct Fflo {
     pub rows : usize,
     pub cols : usize,
@@ -14,9 +17,9 @@ pub struct Fflo {
     pub canvas : Vec<Color>,
     pub y_address_book : Vec<i32>,
     pub x_address_book : Vec<i32>,
-    pub filters : Vec<Filter>,
-    pub num_rect_filters : usize,
-    pub num_gen_filters : usize,
+    pub hands : Vec<Hand>,
+    pub num_box_hands : usize,
+    pub num_gen_hands : usize,
     pub row_span : usize,
     pub col_span : usize,
     pub targets : usize,
@@ -31,26 +34,30 @@ pub struct Fflo {
     pub text_height : usize,
     pub text : String,
     pub font : Font,
-    pub file : File,
-    pub save_counter : usize,
 }
 impl Fflo {
-    pub fn apply_filters(&mut self) {
-        let mut field_state = self.field.clone();
+    pub fn wring_field(&mut self) {
+        let mut field = self.field.clone();
         for _ in 0..self.filterings {
-            for f in self.filters.iter() {
-                field_state = f.field_from_filter(&field_state);
+            for h in self.hands.iter() {
+                field = handled_field(&h,&field);
             }
         }
-        self.field  = field_state;
+        self.field  = field;
+    }
+
+    pub fn paint_canvas_from_field(&mut self) {
         self.canvas = self.field.to_monochrome_canvas();
     }
-    pub fn replace_filters(&mut self) {
-        match self.rect_mode {
-            true => self.filters = self.random_filters("rect", self.num_rect_filters),
-            false => self.filters = self.random_filters("jagged",self.num_gen_filters),
+    pub fn load_box_hands(&mut self) {
+        let mut rng = rand::thread_rng();
+        for _ in 0..self.num_box_hands {
+            let rows = rng.gen_range(0..self.row_span);
+            let cols = rng.gen_range(0..self.col_span);
+            self.hands.push(box_hand((2*rows +1) as i64,(2*cols + 1) as i64,4.0f64));
         }
     }
+
     pub fn plot(&mut self, screen :  &mut RaylibDrawHandle ) {
         screen.clear_background(Color {r : 0, g : 0, b: 0, a: 255});
         screen.draw_rectangle(
@@ -71,13 +78,6 @@ impl Fflo {
         }
     }
     pub fn plot_pixel(&self, screen : &mut RaylibDrawHandle, row : usize, col : usize) {
-        // screen.draw_rectangle(
-        //     (col*self.pixel_width) as i32,
-        //     (row*self.pixel_height) as i32,
-        //     self.pixel_width as i32,
-        //     self.pixel_height as i32,
-        //     self.canvas[col *self.rows + row]
-        // );
         screen.draw_rectangle(
             self.x_address_book[col],
             self.y_address_book[row],
@@ -88,7 +88,9 @@ impl Fflo {
     }
     pub fn flicker(&mut self) {
         if !self.paused && self.flicker_counter >= self.flickers {
-            self.apply_filters();
+            //self.apply_filters();
+            self.wring_field();
+            self.paint_canvas_from_field();
             self.flicker_counter = 0;
         } else {
             self.flicker_counter += 1;
@@ -128,9 +130,9 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         canvas : vec![Color {r : 0, g : 0 ,b : 0, a : 255}; rows*cols],
         y_address_book : vec![],
         x_address_book : vec![],
-        filters : vec![],
-        num_rect_filters : 11,
-        num_gen_filters : 15,
+        hands : vec!(),
+        num_box_hands : 11,
+        num_gen_hands : 15,
         row_span : 9,
         col_span : 9,
         targets : 15,
@@ -145,15 +147,13 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         text_height : settings.text_height,
         text: "".to_string(),
         font,
-        file,
-        save_counter : 0,
 
     }
 }
 pub fn new_fflo(settings : &Settings, font : Font) -> Fflo {
     let mut fflo = default_fflo(settings,font);
     fflo.load_address_books();
-    fflo.replace_filters();
+    fflo.load_box_hands();
     fflo
 }
 

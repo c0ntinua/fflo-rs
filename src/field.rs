@@ -1,5 +1,4 @@
 use raylib::core::color::Color;
-use crate::global;
 use crate::fflo::*;
 use rand::random;
 use rand::Rng;
@@ -10,6 +9,7 @@ pub struct Field {
     pub cols : usize,
     pub cells : Vec<f64>,
 }
+pub const SCALE : f64 = 1.0/128.0;
 impl Field {
     pub fn get(&self , r : i64, c : i64) -> f64 {
         let mut row =  r;
@@ -19,6 +19,20 @@ impl Field {
         while col < 0 { col += (self.cols as i64)};
         while col > (self.cols as i64) - 1 { col -= self.cols as i64};
         self.cells[(row * self.cols  as i64 + col) as usize]
+    }
+    pub fn spin(&self , target : (i64,i64)) -> f64 {
+        let (mut row, mut col) = target;
+        while row < 0 { row += self.rows as i64};
+        while row > (self.rows as i64) - 1 { row -= self.rows as i64 };
+        while col < 0 { col += (self.cols as i64)};
+        while col > (self.cols as i64) - 1 { col -= self.cols as i64};
+        self.cells[(row * self.cols  as i64 + col) as usize]
+    }
+    pub fn access(&self, r : i64, c : i64) -> usize {
+        (r*(self.cols as i64) + c) as usize
+    }
+    pub fn go(&self, r : usize, c : usize) -> usize {
+        (r*self.cols + c) as usize
     }
     pub fn to_monochrome_canvas(&self) -> Vec<Color> {
         let mut canvas = vec![];
@@ -60,7 +74,7 @@ fn color_from_float(x : f64) -> Color {
 }
 
 fn u8_from_f64(x : f64) -> u8 {
-    ((x + 1.0)/global::scale).trunc() as u8
+    ((x + 1.0)/SCALE).trunc() as u8
 }
 
 fn random_f64() -> f64 {
