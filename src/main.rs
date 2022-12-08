@@ -2,7 +2,7 @@ extern crate rand;
 extern crate libm;
 use std::fs::File;
 use raylib::prelude::*;
-mod fflo;mod field;mod finger;mod hand;mod filter;mod input;mod init;mod settings;mod file;
+mod fflo;mod field;mod finger;mod hand;mod input;mod init;mod settings;mod file;
 use fflo::*;use input::*;use init::*;use settings::*;use file::*;
 
 

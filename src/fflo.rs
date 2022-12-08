@@ -1,5 +1,4 @@
 use crate::field::*;
-use crate::filter::*;
 use crate::settings::*;
 use crate::hand::*;
 use crate::finger::*;
@@ -24,7 +23,7 @@ pub struct Fflo {
     pub col_span : usize,
     pub targets : usize,
     pub rect_mode : bool,
-    pub mask_intensity : f64,
+    pub pow : f64,
     pub filterings : usize,
     pub paused : bool,
     pub flickers : u64,
@@ -45,17 +44,8 @@ impl Fflo {
         }
         self.field  = field;
     }
-
     pub fn paint_canvas_from_field(&mut self) {
         self.canvas = self.field.to_monochrome_canvas();
-    }
-    pub fn load_box_hands(&mut self) {
-        let mut rng = rand::thread_rng();
-        for _ in 0..self.num_box_hands {
-            let rows = rng.gen_range(0..self.row_span);
-            let cols = rng.gen_range(0..self.col_span);
-            self.hands.push(box_hand((2*rows +1) as i64,(2*cols + 1) as i64,4.0f64));
-        }
     }
 
     pub fn plot(&mut self, screen :  &mut RaylibDrawHandle ) {
@@ -131,13 +121,13 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         y_address_book : vec![],
         x_address_book : vec![],
         hands : vec!(),
-        num_box_hands : 11,
+        num_box_hands : 5,
         num_gen_hands : 15,
-        row_span : 9,
-        col_span : 9,
+        row_span : 4,
+        col_span : 4,
         targets : 15,
         rect_mode : true,
-        mask_intensity : 8.0,
+        pow : 8.0,
         filterings : 1,
         paused : false,
         flickers: 0,

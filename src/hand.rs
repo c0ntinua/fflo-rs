@@ -52,6 +52,28 @@ pub fn hand_as_string(hand : &Hand) -> String {
     hand.iter().map(|f : &Finger| finger_as_string(f)).collect::<Vec<String>>().join("\n")
 }
 
+pub fn random_box_hand(r : usize, c : usize, p : f64) -> Hand {
+    let mut rng = rand::thread_rng();
+    let rows = rng.gen_range(0..r);
+    let cols = rng.gen_range(0..c);
+    let act = random_action(p);
+    box_hand((2*rows +1) as i64,(2*cols + 1) as i64,act)
+}
+
+impl Fflo {
+    pub fn load_box_hands(&mut self) {
+        let mut rng = rand::thread_rng();
+        for _ in 0..self.num_box_hands {
+            self.hands.push(random_box_hand(self.row_span,self.col_span,self.pow));
+        }
+    }
+    pub fn switch_hand(&mut self, i : usize) {
+        if i < self.hands.len() {
+            self.hands[i] = random_box_hand(self.row_span,self.col_span,self.pow);
+        }
+    }
+}
+
 
 
 
