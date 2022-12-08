@@ -9,7 +9,22 @@ pub struct Filter {
 	pub mask : Vec<f64>,
     pub targets : Vec<(i64,i64)>,
 }
+pub struct Finger {
+    target : (i64,i64),
+    action : f64,
+}
+impl Finger {
+    pub fn to_string(&self) -> String {
+        format!("[{:+03},{:+03},{:+020.15}]", self.target.0, self.target.1, self.action)
+    }
+}
+
 impl Filter {
+    pub fn to_string(&self) -> String {
+        let strings : Vec<String>= self.to_fingers().iter().map(|x| x.to_string()).collect();
+        strings.join("\n")
+        //.iter().map(|x| x.to_string()).collect();
+    }
     pub fn field_from_filter(&self, field : &Field) -> Field {
         let mut cells = vec![0.0f64; field.rows*field.cols];
         for r in 0..field.rows {
@@ -29,6 +44,19 @@ impl Filter {
             sum += field.get(row + t.0,col + t.1)*self.mask[i];
         }
         tanh(sum)
+    }
+    pub fn to_fingers(&self) -> Vec<Finger> {
+        debug_assert!(self.mask.len() == self.targets.len());
+        let mut hand = vec!();
+        for i in 0..self.targets.len() {
+            hand.push(
+                Finger {
+                    target : self.targets[i],
+                    action : self.mask[i],
+                }
+            );
+        }
+        hand
     }
 }
 

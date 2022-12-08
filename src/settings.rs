@@ -8,10 +8,10 @@ pub struct Settings {
 }
 pub fn fundamental_settings() -> Settings {
     Settings {
-        rows : 250,
-        cols : 500,
-        pixel_height : 2,
-        pixel_width : 1,
+        rows : 125,
+        cols : 250,
+        pixel_height : 8,
+        pixel_width : 4,
         text_height : 0,
         font_name : "FragmentMono-Regular.ttf".to_string(),
     }

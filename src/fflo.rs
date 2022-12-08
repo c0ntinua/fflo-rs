@@ -1,10 +1,10 @@
 use crate::field::*;
 use crate::filter::*;
 use crate::settings::*;
-use crate::global;
 use raylib::prelude::*;
 use raylib::core::color::Color;
 use raylib::core::text::Font;
+use std::fs::File;
 pub struct Fflo {
     pub rows : usize,
     pub cols : usize,
@@ -31,6 +31,8 @@ pub struct Fflo {
     pub text_height : usize,
     pub text : String,
     pub font : Font,
+    pub file : File,
+    pub save_counter : usize,
 }
 impl Fflo {
     pub fn apply_filters(&mut self) {
@@ -116,6 +118,7 @@ impl Fflo {
 fn default_fflo(settings : &Settings, font : Font) -> Fflo {
     let rows = settings.rows as usize;
     let cols = settings.cols as usize;
+    let mut file = File::create("foo.txt").unwrap();
     Fflo {
         rows,
         cols,
@@ -126,10 +129,10 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         y_address_book : vec![],
         x_address_book : vec![],
         filters : vec![],
-        num_rect_filters : 5,
+        num_rect_filters : 11,
         num_gen_filters : 15,
-        row_span : 11,
-        col_span : 11,
+        row_span : 9,
+        col_span : 9,
         targets : 15,
         rect_mode : true,
         mask_intensity : 8.0,
@@ -142,6 +145,9 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         text_height : settings.text_height,
         text: "".to_string(),
         font,
+        file,
+        save_counter : 0,
+
     }
 }
 pub fn new_fflo(settings : &Settings, font : Font) -> Fflo {
