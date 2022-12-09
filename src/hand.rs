@@ -59,12 +59,33 @@ pub fn random_box_hand(r : usize, c : usize, p : f64) -> Hand {
     let act = random_action(p);
     box_hand((2*rows +1) as i64,(2*cols + 1) as i64,act)
 }
+pub fn random_hand(r : usize, c: usize,  pow : f64, targets : usize) -> Hand {
+    let mut hand = vec!();
+    let mut rng = rand::thread_rng();
+    let rows = rng.gen_range(0..r);
+    let cols = rng.gen_range(0..c);
+    let act = random_action(pow);
+    for _ in 0..targets {
+        hand.push(finger(2*rows +1 ,2*cols + 1 ,act));
+    }
+    hand
+}
+
+
 
 impl Fflo {
     pub fn load_box_hands(&mut self) {
+        self.hands = vec!();
         let mut rng = rand::thread_rng();
         for _ in 0..self.num_box_hands {
             self.hands.push(random_box_hand(self.row_span,self.col_span,self.pow));
+        }
+    }
+    pub fn load_hands(&mut self) {
+        self.hands = vec!();
+        let mut rng = rand::thread_rng();
+        for _ in 0..self.num_box_hands {
+            self.hands.push(random_hand(self.row_span,self.col_span,self.pow, self.targets));
         }
     }
     pub fn switch_hand(&mut self, i : usize) {
