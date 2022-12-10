@@ -1,5 +1,5 @@
 pub const SCALE : f64 = 1.0/128.0;
-pub const S : usize = 200;//Array width
+
 pub struct Settings {
     pub size : (i32,i32),
     pub pixel_size : (i32,i32),
@@ -9,10 +9,11 @@ pub struct Settings {
     pub box_max_size : (i32,i32),
     pub max_power : f64,
 }
+pub const S : usize = 500;//Array width
 fn settings_DEFAULT() -> Settings {
     Settings {
-        size : (199i32,199i32),
-        pixel_size : (10i32,10i32),
+        size : (250i32,250i32),
+        pixel_size : (4i32,4i32),
         load_from_file : false,
         filename : "".to_string(),
         num_box_hands : 10,

@@ -24,18 +24,7 @@ pub fn f64_FROM_hand_field_target(hand : &Hand , field: &Field, t : (i32,i32) ) 
     tanh(s)
 }
 
-pub fn field_FROM_hand_field(hand : &Hand, field: &Field) -> Field {
-    let mut cells = [[0.0f64;S];S];
-    for r  in 0..field.size.0 { 
-        for c in 0..field.size.1 {
-            cells[r as usize][c as usize] = f64_FROM_hand_field_target(hand, field, (r,c));
-        } 
-    }
-    Field {
-        size : field.size,
-        cells,
-    }
-}
+
 
 
 
