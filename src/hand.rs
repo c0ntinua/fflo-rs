@@ -7,6 +7,12 @@ use crate::finger::*;
 
 pub type Hand = Vec<Finger>;
 
+pub fn empty_hand() -> Hand {
+    vec!()
+}
+
+
+
 
 
 pub fn handled_cell(hand : &Hand , field: &Field, target : (i64,i64) ) -> f64 {

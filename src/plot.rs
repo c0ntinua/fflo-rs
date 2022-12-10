@@ -18,9 +18,9 @@ impl Fflo {
             self.text_height as i32,
             Color {r : 0, g : 0, b: 0, a: 255}
         );
-        //self.plot_canvas(screen);
-        self.plot_canvas_circle(screen);
-        self.plot_text(screen);
+        self.plot_canvas(screen);
+        //self.plot_canvas_circle(screen);
+        //self.plot_text(screen);
     }    
     
     pub fn plot_canvas(&mut self, screen : &mut RaylibDrawHandle) {

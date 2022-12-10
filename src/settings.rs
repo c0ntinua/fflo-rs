@@ -1,3 +1,5 @@
+use crate::fflo::*;
+
 pub struct Settings {
     pub rows : usize,
     pub cols : usize,
@@ -14,5 +16,16 @@ pub fn fundamental_settings() -> Settings {
         pixel_width : 10,
         text_height : 0,
         font_name : "FragmentMono-Regular.ttf".to_string(),
+    }
+}
+
+impl Fflo {
+    pub fn init_hands(&mut self, args : Vec<String>) {
+        if args.len() == 2 {
+            let filename = &args[1];
+            self.load_hands_from_file(filename);
+        } else {
+            self.load_hands();
+        }
     }
 }

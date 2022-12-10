@@ -32,12 +32,11 @@ pub struct Fflo {
     pub noise_targets : usize,
     pub text_height : usize,
     pub text : String,
-    pub font : Font,
 }
-fn default_fflo(settings : &Settings, font : Font) -> Fflo {
+fn default_fflo(settings : &Settings) -> Fflo {
     let rows = settings.rows as usize;
     let cols = settings.cols as usize;
-    let mut file = File::create("foo.txt").unwrap();
+    //let mut file = File::create("foo.txt").unwrap();
     Fflo {
         rows,
         cols,
@@ -63,14 +62,13 @@ fn default_fflo(settings : &Settings, font : Font) -> Fflo {
         noise_targets : 1000,
         text_height : settings.text_height,
         text: "".to_string(),
-        font,
-
     }
 }
-pub fn new_fflo(settings : &Settings, font : Font) -> Fflo {
-    let mut fflo = default_fflo(settings,font);
+pub fn new_fflo(settings : &Settings) -> Fflo {
+    let mut fflo = default_fflo(settings);
     fflo.load_address_books();
-    fflo.load_hands();
+    //fflo.load_hands();
+    //fflo.load_hands_from_file(&"newer.txt".to_string());
     fflo
 }
 
@@ -95,9 +93,9 @@ impl Fflo {
             self.flicker_counter += 1;
         }
     }
-    pub fn plot_text(&mut self, screen : &mut RaylibDrawHandle ) {
+    pub fn plot_text(&mut self, font : Font, screen : &mut RaylibDrawHandle ) {
         screen.draw_text_ex(
-            &self.font,
+            &font,
             &self.text,
             Vector2 {x : 0.0 , y : (self.rows*self.pixel_height) as f32 },
             self.text_height as f32,
