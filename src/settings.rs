@@ -1,31 +1,34 @@
-use crate::fflo::*;
-
 pub struct Settings {
-    pub rows : usize,
-    pub cols : usize,
-    pub pixel_height : usize,
-    pub pixel_width : usize,
-    pub text_height : usize,
-    pub font_name : String,
+    pub size : (i32,i32),
+    pub pixel_size : (i32,i32),
+    pub load_from_file : bool,
+    pub filename : String,
+    pub num_box_hands : usize,
+    pub box_max_size : (i32,i32),
+    pub max_power : f64,
 }
-pub fn fundamental_settings() -> Settings {
+fn settings_DEFAULT() -> Settings {
     Settings {
-        rows : 100,
-        cols : 100,
-        pixel_height : 10,
-        pixel_width : 10,
-        text_height : 0,
-        font_name : "FragmentMono-Regular.ttf".to_string(),
+        size : (100i32,100i32),
+        pixel_size : (100i32,100i32),
+        load_from_file : false,
+        filename : "".to_string(),
+        num_box_hands : 10,
+        box_max_size : (9,9),
+        max_power : 9.0f64,
     }
 }
 
-impl Fflo {
-    pub fn init_hands(&mut self, args : Vec<String>) {
-        if args.len() == 2 {
-            let filename = &args[1];
-            self.load_hands_from_file(filename);
-        } else {
-            self.load_hands();
-        }
+pub fn settings_FROM_args(args : Vec<String>) -> Settings {
+    let mut settings = settings_DEFAULT();
+    if args.len() == 6 {
+        settings.size.0 = args[1].parse::<i32>().unwrap();
+        settings.size.0 = args[2].parse::<i32>().unwrap();
+        settings.pixel_size.0 = args[3].parse::<i32>().unwrap();
+        settings.pixel_size.0  = args[4].parse::<i32>().unwrap();
+        settings.load_from_file = true;
+        settings.filename = args[5].clone();
     }
+    settings
 }
+
