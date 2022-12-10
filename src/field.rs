@@ -4,31 +4,27 @@ use raylib::core::color::Color;
 
 use rand::random;
 use rand::Rng;
-pub const SCALE : f64 = 1.0/128.0;
+
 #[derive(Clone)]
 pub struct Field {
     pub size : (i32,i32),
-    pub cells : Vec<f64>,
+    pub cells : [[f64;S];S],
 }
 
 pub fn field_FROM_settings(settings : &Settings) -> Field {
-    let mut cells = vec![0.0f64;(settings.size.0*settings.size.1) as usize];
-    for cell in cells.iter_mut() {
-        *cell = random_f64();
-    }
-    Field {
-        size : settings.size,
-        cells
-    }
+    let mut cells = [[0.0f64;S];S];
+    for r in 0..S { for c in 0..S { cells[r][c] =random_f64();}}
+    Field { size : settings.size, cells }
 }
 
 
 pub fn f64_FROM_field_target(f : &Field, t : (i32,i32)) -> f64 {
     let u = usize_target_FROM_target_size(t, f.size);
-    f.cells[(u.0*f.size.1 + u.1) as usize]
+    f.cells[u.0 as usize][u.1 as usize]
 }
 pub fn f64_FROM_field_utarget(f : &Field, t : (i32,i32)) -> f64 {
-    f.cells[(t.0*f.size.1 + t.1) as usize]
+    f.cells[t.0 as usize][t.1 as usize]
+
 }
 
 pub fn usize_FROM_i32_i32(x : i32, max : i32) -> i32 {

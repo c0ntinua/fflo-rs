@@ -2,7 +2,7 @@ use rand::random;
 use rand::Rng;
 use libm::tanh;
 
-use crate::field::*;use crate::finger::*;
+use crate::field::*;use crate::finger::*;use crate::settings::*;
 
 #[derive(Clone)]
 pub struct Hand {
@@ -25,16 +25,15 @@ pub fn f64_FROM_hand_field_target(hand : &Hand , field: &Field, t : (i32,i32) ) 
 }
 
 pub fn field_FROM_hand_field(hand : &Hand, field: &Field) -> Field {
-    let mut cells = vec![0.0f64; (field.size.0*field.size.1) as usize];
+    let mut cells = [[0.0f64;S];S];
     for r  in 0..field.size.0 { 
         for c in 0..field.size.1 {
-            let u = (r*field.size.1 + c) as usize;
-            cells[u] = f64_FROM_hand_field_target(hand, field, (r,c));
+            cells[r as usize][c as usize] = f64_FROM_hand_field_target(hand, field, (r,c));
         } 
     }
     Field {
         size : field.size,
-        cells
+        cells,
     }
 }
 

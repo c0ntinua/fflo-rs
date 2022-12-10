@@ -19,7 +19,7 @@ pub fn filename() -> String {
 pub fn file() -> File {
     File::create(format!("{:?}.txt", chrono::offset::Local::now())).unwrap()
 }
-pub fn write_WITH_hands(hands : Vec<Hand>) {
+pub fn write_WITH_hands(hands : &Vec<Hand>) {
     let mut file = file();
     for hand in hands.iter() {write_WITH_hand_filename(hand, &mut file);}
 }

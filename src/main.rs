@@ -23,11 +23,11 @@ fn main() {
 	let mut field = field_FROM_settings(&settings);
 	let mut hands = hands_FROM_settings(&settings);
 	while !handle.window_should_close() {
-		respond_to_input(&handle);
+		respond_to_input(&handle, &mut hands, &mut field, &mut settings);
 		for hand in hands.iter() {
 			field = field_FROM_hand_field(hand, &field);
 		}
-		canvas = canvas_FROM_field_canvas(&field, &canvas);
+		UPDATE_canvas_WITH_field(&mut canvas, &field);
 		let mut screen = handle.begin_drawing(&thread);
 		plot_WITH_screen_canvas(&mut screen, &canvas);
 	}

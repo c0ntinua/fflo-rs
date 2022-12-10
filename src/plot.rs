@@ -8,7 +8,7 @@ pub fn plot_WITH_screen_canvas(screen :  &mut RaylibDrawHandle, canvas : &Canvas
     for row in 0..canvas.size.0 {
         for col in 0..canvas.size.1 {
             let target = (row * canvas.pixel_size.0, col * canvas.pixel_size.1);
-            let color = canvas.colors[(row*canvas.size.1+col) as usize];
+            let color = canvas.colors[row as usize][col as usize];
             plot_pixel_WITH_screen_color_target_size(screen,color,target,size);
         }
     }
