@@ -11,8 +11,13 @@ pub fn hands_FROM_filename(filename : &str) -> Vec<Hand> {
 }
 pub fn write_WITH_hand_filename(hand : &Hand, file : &mut File)  {
     let s = string_FROM_hand(hand);
-    writeln!(file, "\n{}", &s).unwrap();
+    write!(file, "{}", &s).unwrap();
 }
+pub fn write_WITH_hands_filename(hands : &Vec<Hand>, file : &mut File)  {
+    let s = string_FROM_hands(hands);
+    write!(file, "{}", &s).unwrap();
+}
+
 pub fn filename() -> String {
     format!("{:?}.txt", chrono::offset::Local::now())
 }
@@ -21,6 +26,16 @@ pub fn file() -> File {
 }
 pub fn write_WITH_hands(hands : &Vec<Hand>) {
     let mut file = file();
-    for hand in hands.iter() {write_WITH_hand_filename(hand, &mut file);}
+    write_WITH_hands_filename(hands, &mut file);
 }
+
+// pub fn write_WITH_hands(hands : &Vec<Hand>) {
+//     let mut file = file();
+//     for (i,hand) in hands.iter().enumerate() {
+//         write_WITH_hand_filename(hand, &mut file);
+//         if i < hands.len() - 1 {
+//             write!(file, "\n").unwrap();
+//         }
+//     }
+// }
    
