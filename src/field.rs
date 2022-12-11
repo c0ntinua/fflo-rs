@@ -9,18 +9,19 @@ use rand::Rng;
 #[derive(Clone)]
 pub struct Field {
     pub size : (i32,i32),
-    pub cells : [[f64;S];S],
+    //pub cells : [[f64;S];S],
+    pub cells : Vec<Vec<f64>>,
 }
 
 pub fn field_FROM_settings(settings : &Settings) -> Field {
-    let mut cells = [[0.0f64;S];S];
+    let mut cells = vec![vec![0.0f64;S];S];
     for r in 0..settings.size.0 as usize { 
         for c in 0..settings.size.1 as usize { cells[r][c] =random_f64();}}
     Field { size : settings.size, cells }
 }
 
 pub fn field_FROM_hand_field(hand : &Hand, field: &Field) -> Field {
-    let mut cells = [[0.0f64;S];S];
+    let mut cells = vec![vec![0.0f64;S];S];
     for r  in 0..field.size.0 { 
         for c in 0..field.size.1 {
             cells[r as usize][c as usize] = f64_FROM_hand_field_target(hand, field, (r,c));
@@ -60,16 +61,7 @@ pub fn usize_target_FROM_target_size(target : (i32,i32), max : (i32,i32)) -> (i3
     (usize_FROM_i32_i32(target.0,max.0),usize_FROM_i32_i32(target.1,max.1))
 }
 
-pub fn color_FROM_f64(x : f64) -> Color {
-    let h = u8_FROM_f64(x);
-    Color {r : h, g : h, b : h, a : 255}
-}
-pub fn color_FROM_f64_f64_f64(x : f64 ,y : f64, z : f64 ) -> Color {
-    let r = u8_FROM_f64(x);
-    let g = u8_FROM_f64(x);
-    let b = u8_FROM_f64(x);
-    Color {r , g, b, a : 255 }
-}
+
 
 pub fn u8_FROM_f64(x : f64) -> u8 {
     ((x + 1.0)/SCALE).trunc() as u8

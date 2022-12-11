@@ -9,19 +9,28 @@ pub struct Settings {
     pub box_max_size : (i32,i32),
     pub max_power : f64,
     pub filterings : usize,
-
+    pub flickers : usize,
+    pub max_flickers : usize,
+    pub num_color_fields : usize,
+    pub mode : usize,
+    pub num_modes : usize,
 }
-pub const S : usize = 250;//Array width
+pub const S : usize = 500;//Array width
 fn settings_DEFAULT() -> Settings {
     Settings {
         size : (250i32,100i32),
         pixel_size : (4i32,10i32),
         load_from_file : false,
         filename : "".to_string(),
-        num_box_hands : 10,
-        box_max_size : (3,3),
+        num_box_hands : 7,
+        box_max_size : (4,4),
         max_power : 9.0f64,
         filterings : 1,
+        flickers : 1,
+        max_flickers : 50,
+        num_color_fields : 3,
+        mode : 0,
+        num_modes : 2,
 
     }
 }
