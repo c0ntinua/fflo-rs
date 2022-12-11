@@ -8,17 +8,21 @@ pub struct Settings {
     pub num_box_hands : usize,
     pub box_max_size : (i32,i32),
     pub max_power : f64,
+    pub filterings : usize,
+
 }
-pub const S : usize = 500;//Array width
+pub const S : usize = 250;//Array width
 fn settings_DEFAULT() -> Settings {
     Settings {
-        size : (250i32,250i32),
-        pixel_size : (4i32,4i32),
+        size : (250i32,100i32),
+        pixel_size : (4i32,10i32),
         load_from_file : false,
         filename : "".to_string(),
         num_box_hands : 10,
-        box_max_size : (9,9),
+        box_max_size : (3,3),
         max_power : 9.0f64,
+        filterings : 1,
+
     }
 }
 

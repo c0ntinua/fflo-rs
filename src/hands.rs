@@ -1,6 +1,8 @@
 use crate::settings::*;
 use crate::hand::*;
 use crate::file::*;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 pub fn random_hands_FROM_settings(settings : &Settings) -> Vec<Hand> {
     let mut hands = vec!();
@@ -15,4 +17,14 @@ pub fn hands_FROM_settings(settings : &Settings) -> Vec<Hand> {
         true => hands_FROM_filename(&settings.filename),
         false => random_hands_FROM_settings(settings),
     }
+}
+pub fn UPDATE_hands_WITH_index_settings(hands : &mut Vec<Hand> , index : usize, settings : &Settings) {
+    if hands.len() > index {
+        hands[index] = hand_FROM_settings(settings);
+    }
+}
+
+pub fn SHUFFLE_hands(hands : &mut Vec<Hand>) {
+    let mut rng = thread_rng();
+    hands.shuffle(&mut rng);
 }
