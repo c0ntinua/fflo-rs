@@ -1,45 +1,57 @@
 use rand::random;
 use rand::Rng;
 use libm::tanh;
-use crate::global;
-use crate::field::*;
-use crate::fflo::*;
-use crate::finger::*;
 
-type Hand = Vec<Finger>;
+use crate::field::*;use crate::finger::*;use crate::settings::*;
 
-pub fn hand_of_cell(hand : &Hand , field: &Field, target : (i64,i64) ) -> f64 {
-
-}
-pub fn of_cell(&self, field : &Field, row : i64, col: i64) -> f64 {
-    let mut sum = 0.0f64;
-    for (i, t) in self.targets.iter().enumerate() {
-        sum += field.get(row + t.0,col + t.1)*self.mask[i];
-    }
-    tanh(sum)
+#[derive(Clone)]
+pub struct Hand {
+    pub fingers : Vec<Finger>,
 }
 
+pub fn fingerless_hand() -> Hand {
+    Hand {
+        fingers : vec!(),
+    }
+}
+
+pub fn f64_FROM_hand_field_target(hand : &Hand , field: &Field, t : (i32,i32) ) -> f64 {
+    let mut s = 0.0f64;
+    for finger in hand.fingers.iter() {
+        let next_target = (finger.target.0+t.0,finger.target.1+t.1);
+        s += f64_FROM_finger_field_target(finger, field, next_target);
+    }
+    tanh(s)
+}
 
 
-    pub fn field_from_filter(&self, field : &Field) -> Field {
-        let mut cells = vec![0.0f64; field.rows*field.cols];
-        for r in 0..field.rows {
-            for c in 0..field.cols {
-                cells[(r*field.cols +c) as usize] = self.of_cell(field, r as i64, c as i64);
-            }
-        }
-        Field {
-            rows : field.rows,
-            cols : field.cols,
-            cells
-        }
-    }
-    pub fn of_cell(&self, field : &Field, row : i64, col: i64) -> f64 {
-        let mut sum = 0.0f64;
-        for (i, t) in self.targets.iter().enumerate() {
-            sum += field.get(row + t.0,col + t.1)*self.mask[i];
-        }
-        tanh(sum)
-    }
+
+
+
+pub fn box_hand_FROM_size_f64(max_size : (i32,i32), max_pow : f64) -> Hand {
+    let mut rng = rand::thread_rng();
+    let size = random_size_FROM_size(max_size);
+    let fingers = box_fingers_FROM_size_f64(size,max_pow);
+    Hand { fingers }
+}
+
+pub fn random_size_FROM_size(max_size : (i32,i32)) -> (i32,i32) {
+    (2*random_i32_FROM_i32(max_size.0) + 1,2*random_i32_FROM_i32(max_size.1)+1)
+}
+
+pub fn random_i32_FROM_i32(max : i32) -> i32 {
+    let mut rng = rand::thread_rng();
+    rng.gen_range(0..(max as usize)) as i32
+}
+
+
+
+
+
+
+
+
+
+
 
 
